@@ -20,4 +20,23 @@ jobs:
         run: docker build -t myfirst-docker .
 
       - name: Run Pytest inside Docker
-        run: docker run --rm myfirst-docker
+        run: |
+          mkdir -p test-results
+          docker run --name playwright-tests myfirst-docker \
+            pytest -v -s --tb=long \
+            --junitxml=/app/test-results/results.xml
+
+      - name: Copy test results from container
+        if: always()
+        run: |
+          mkdir -p test-results
+          docker cp playwright-tests:/app/test-results/. test-results/ || true
+          docker rm -f playwright-tests || true
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/
+          if-no-files-found: warn
