@@ -40,7 +40,7 @@ def test_valid_login(page):
     )
     check_out.ContinueButton()
     check_out.Overview_Page()
-    check_out.FinishButton()
+    check_out.FinishButton(A)
     check_out.verify_successmessage()
     check_out.BackHome()
     time.sleep(10)
