@@ -1,24 +1,22 @@
 
-# 1. Use Python as the base image
 FROM python:3.12-slim
 
-# 2. Set the working directory
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
-# 3. Install system dependencies needed by Playwright browsers
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# 4. Copy and install Python dependencies
+# Install Playwright Chromium system dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. Install Chromium and its required system dependencies
-RUN playwright install --with-deps chromium
+RUN pip install --no-cache-dir -r requirements.txt \
+    && python -m playwright install --with-deps chromium
 
-# 6. Copy the automation framework
+# Copy automation framework
 COPY . .
 
-# 7. Run Pytest by default
-CMD ["pytest", "-v", "--tb=short"]
+# Reports are written to /app/test-results
+RUN mkdir -p /app/test-results
+
+# Default command; Jenkins overrides it when running tests
+CMD ["python", "-m", "pytest", "tests/", "-v", "--tb=short"]
