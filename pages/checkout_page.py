@@ -17,6 +17,7 @@ class CheckOut:
         self.Continue_Button = page.get_by_role("button",name="continue")
         self.Finish_Button = page.get_by_role("button",name="Finish")
         self.Back_Home = page.get_by_role("button",name="Back Home")
+        #New File added
 
     def verify_checkout_page(self):
         expect(self.title).to_be_visible()

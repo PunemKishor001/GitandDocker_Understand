@@ -1,22 +1,23 @@
 
-name: Playwright Docker Automation
+name: Playwright Docker Tests
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
-  automation-tests:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout GitHub code
         uses: actions/checkout@v4
 
       - name: Build Docker image
         run: docker build -t myfirst-docker .
 
-      - name: Run Pytest in Docker
+      - name: Run Pytest inside Docker
         run: docker run --rm myfirst-docker
